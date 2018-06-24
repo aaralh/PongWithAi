@@ -1,0 +1,7 @@
+CONFIG = {
+    "gamesBeforeAiPlays": 2,
+    "learningRate": 0.001,
+    "peekMode": true,
+    "areaWidth": 600,
+    "areaHeight": 900
+};
