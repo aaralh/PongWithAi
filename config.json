@@ -1,7 +1,9 @@
 CONFIG = {
     "gamesBeforeAiPlays": 2,
     "learningRate": 0.001,
-    "peekMode": true,
-    "areaWidth": 600,
-    "areaHeight": 900
+    "peekMode": false, // When training agains computer with peekMode you can see every four turns (AI plays 4 turns, Computer plays 4 and so on) how the AI plays.
+    "areaWidth": 400,
+    "areaHeight": 600,
+    "humanPlayer": true,
+    "clearDataAfterTraining": false,
 };

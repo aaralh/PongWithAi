@@ -27,7 +27,12 @@ namespace Game {
     canvas.width = CONFIG.areaWidth;
     canvas.height = CONFIG.areaHeight;
     let context = canvas.getContext('2d');
-    let player = new Pong.Computer(175, CONFIG.areaHeight - 20, 50, 10); //To play against computer change this to Player()
+    let player;
+    if (CONFIG.humanPlayer) {
+        player = new Pong.Player(175, CONFIG.areaHeight - 20, 50, 10);
+    } else {
+        player = new Pong.Computer(175, CONFIG.areaHeight - 20, 50, 10);
+    }
     let computer = new Pong.Computer(175, 10, 50, 10);
     let ball = new Pong.Ball(200, 300);
     let ai = new Pong.AI(model);
@@ -43,9 +48,13 @@ namespace Game {
         ball.render(context);
     };
 
-    //from pong code:
     function update() {
-        player.update(ball);
+        if (CONFIG.humanPlayer){
+            player.update(keysDown);
+        } else {
+            player.update(ball);
+        }
+
         if (computer.aiPlays) {
             let move = ai.predict_move();
             computer.ai_update(move);
@@ -55,7 +64,6 @@ namespace Game {
         ai.save_data(player.paddle, computer.paddle, ball, CONFIG.areaWidth, CONFIG.areaHeight)
     };
 
-    //from pong code:
     function step() {
         update();
         render();

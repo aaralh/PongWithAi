@@ -2,8 +2,8 @@ namespace Pong {
     export class Player {
         public paddle: Paddle;
     
-        constructor() {
-            this.paddle = new Paddle(175, 580, 50, 10);
+        constructor(x: number, y: number, width: number, height: number) {
+            this.paddle = new Paddle(x, y, width, height);
         }
     
         render(context: any) {

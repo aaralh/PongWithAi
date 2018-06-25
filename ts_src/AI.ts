@@ -11,6 +11,7 @@ namespace Pong {
         private data_ys;
         private index;
         private model;
+        private trainingsAmount: number;
     
         constructor(model: any) {
             this.previous_data = null;
@@ -20,6 +21,7 @@ namespace Pong {
             this.grab_data = true;
             this.flip_table = true;
             this.model = model;
+            this.trainingsAmount = 0;
         }
     
         save_data(player: Paddle, computer:Paddle, ball: Ball, width: number, height: number){
@@ -51,7 +53,7 @@ namespace Pong {
         new_turn(computer: Computer){
             this.previous_data = null;
             this.turn++;
-            console.log('new turn: ' + this.turn);
+            console.info('New turn: ' + this.turn);
 
             if(CONFIG.peekMode) {
                 if(this.turn % 4 === 0) {
@@ -61,8 +63,8 @@ namespace Pong {
                 }
             }
         
-            //hm games til train?
-            if(this.turn > CONFIG.gamesBeforeAiPlays){
+            //how many games til train?
+            if(this.turn >= CONFIG.gamesBeforeAiPlays){
                 this.train();
                 computer.aiPlays = true;
                 this.reset(true);
@@ -70,19 +72,23 @@ namespace Pong {
         }
     
         reset(reset_turns: boolean){
-            this.previous_data = null;
-            this.training_data = [[], [], []];
+            if (CONFIG.clearDataAfterTraining || this.trainingsAmount > 8) {
+                console.info("Clearing training data");
+                this.previous_data = null;
+            }
             if(reset_turns){
                 this.turn = 0;
             }
         }
     
         async train(){
-            console.log('balancing');
+            this.trainingsAmount++;
+            console.info(`Training iteration ${this.trainingsAmount}`)
+            console.info('Balancing');
             //shuffle attempt
             let len = Math.min(this.training_data[0].length, this.training_data[1].length, this.training_data[2].length);
             if(!len){
-                console.log('nothing to train');
+                console.info('Nothing to train');
                 return;
             }
             this.data_xs = [];
@@ -91,14 +97,14 @@ namespace Pong {
                 this.data_xs.push(...this.training_data[index].slice(0, len));
                 this.data_ys.push(...Array(len).fill([index==0?1:0, index==1?1:0, index==2?1:0]));
             }
-            console.log('training');
+            console.info('Training');
             const xs = tf.tensor(this.data_xs);
             const ys = tf.tensor(this.data_ys);
 
-            console.log('training2');
+            console.info('Training #2');
             await this.model.fit(xs, ys);
 
-            console.log('trained');
+            console.info('Trained');
         
         }
     
